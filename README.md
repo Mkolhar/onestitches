@@ -10,6 +10,7 @@ SAAS for digitized embroidered clothing.
 - **Integrations:** Stripe Payment Intents, WhatsApp Business API, SMTP, ZXing, WebSocket/STOMP.
 - **Observability:** OpenTelemetry metrics/traces, structured JSON logs, Prometheus/Grafana, ELK stack, alerts via Slack/Email.
 
+
 ### Current Progress
 - Backend `inventory` service exposing `GET /api/inventory/products` with stubbed data.
 - Frontend home page fetches and lists products from the inventory API with simple category filters.
@@ -18,6 +19,7 @@ SAAS for digitized embroidered clothing.
 
 ### Data Flows
 - **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
+
 - **Customization Upload:** FE validates file → pre-signed URL → upload to S3/GridFS → preview client-side.
 - **Checkout & Payments:** FE confirms Stripe PaymentIntent → `POST /api/orders` → inventory check + persist → publish `order.created` → generate QR → 201.
 - **Real-time Tracking:** Client subscribes `/topic/order/{id}` → `order.status.updated` fan-out via WebSocket; reconnect fetches latest via REST.
@@ -115,7 +117,9 @@ Example `orders` record:
 - [ ] Unit/integration/E2E tests; CI/CD pipeline.
 
 ## Tech Stack & Code Style
+
 - **Backend:** Java 17, Spring Boot 3, Gradle, MongoDB driver, Kafka, Resilience4j, OpenTelemetry.
+
 - **Frontend:** Next.js 14, React 18, TypeScript, Tailwind, React Query, Zustand, Stripe Elements, STOMP.js, ZXing.
 - **Infra:** Docker, Kubernetes, Redis, Prometheus/Grafana, ELK, Vault.
 - **Code Style:** Prettier + ESLint (Airbnb) for TypeScript; Spotless + Checkstyle for Java; Conventional Commits; trunk-based development.
@@ -233,6 +237,7 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
 | Notification spam or policy violations | Template governance, rate limiting, quiet hours, opt-out |
 | Inventory race conditions leading to stock drift | Event-driven single-writer model, Mongo transactions, retry/backoff |
 
+
 ## Epic & Task Checklist
 
 - [x] **ep-customer-catalog – Customer Catalog & PDP**
@@ -311,4 +316,5 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
     - [ ] Rate limiting & input validation  
     - [ ] Audit logging & backups  
     - [ ] Metrics, tracing, health checks
+
 

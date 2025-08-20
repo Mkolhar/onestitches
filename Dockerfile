@@ -1,4 +1,5 @@
 # Multi-stage build for backend and frontend
+
 FROM gradle:8.4-jdk17 AS backend-build
 WORKDIR /backend
 COPY backend/ ./
