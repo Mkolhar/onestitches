@@ -35,6 +35,38 @@ SAAS for digitized embroidered clothing.
 - **Resiliency:** Retry/backoff, circuit breakers, idempotency keys, graceful WebSocket degradation.
 - **Auditing:** All admin/order changes logged with actor, timestamp, before/after snapshot.
 
+
+## Build & Test
+
+Use Gradle to build and test both backend and frontend:
+
+```bash
+gradle build
+```
+
+The repository uses a single root `build.gradle` that configures all modules. Running this command triggers the Next.js production build for the frontend and executes the Spring Boot tests for the backend modules.
+
+If you prefer to use the Gradle wrapper, generate its supporting JAR once after cloning:
+
+```bash
+gradle wrapper --console=plain
+```
+
+The `gradle/wrapper/gradle-wrapper.jar` file is intentionally git‑ignored; the above command will download it locally.
+
+To run an individual backend service in development mode, invoke the desired subproject's `bootRun` task from the repository root:
+
+```bash
+# inventory service
+gradle :backend:inventory:bootRun
+
+# order service
+gradle :backend:order:bootRun
+```
+
+All Gradle configuration lives in the root build file, so these commands must be run from the repository root; running them from within `backend/` will result in `project 'backend' not found` errors.
+
+
 ## Low-Level Design
 ### Class Diagram
 ```mermaid
@@ -117,9 +149,7 @@ Example `orders` record:
 - [ ] Unit/integration/E2E tests; CI/CD pipeline.
 
 ## Tech Stack & Code Style
-
 - **Backend:** Java 17, Spring Boot 3, Gradle, MongoDB driver, Kafka, Resilience4j, OpenTelemetry.
-
 - **Frontend:** Next.js 14, React 18, TypeScript, Tailwind, React Query, Zustand, Stripe Elements, STOMP.js, ZXing.
 - **Infra:** Docker, Kubernetes, Redis, Prometheus/Grafana, ELK, Vault.
 - **Code Style:** Prettier + ESLint (Airbnb) for TypeScript; Spotless + Checkstyle for Java; Conventional Commits; trunk-based development.
@@ -236,7 +266,6 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
 | UPI payment timeouts lower success rate | Poll PaymentIntent, retry UX, pending order reconciliation |
 | Notification spam or policy violations | Template governance, rate limiting, quiet hours, opt-out |
 | Inventory race conditions leading to stock drift | Event-driven single-writer model, Mongo transactions, retry/backoff |
-
 
 ## Epic & Task Checklist
 

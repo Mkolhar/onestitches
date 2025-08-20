@@ -32,10 +32,7 @@ export default async function ProductPage({ params }: { params: { sku: string } 
           className="zoom"
         />
       </div>
-      <style jsx>{`
-        .zoom { transition: transform 0.3s; }
-        .zoom:hover { transform: scale(1.5); }
-      `}</style>
+
     </main>
   );
 }
