@@ -43,6 +43,7 @@ gradle build
 
 The command runs the Next.js production build for the frontend and executes the Spring Boot tests for backend modules.
 
+
 ## Low-Level Design
 ### Class Diagram
 ```mermaid
@@ -125,6 +126,7 @@ Example `orders` record:
 - [ ] Unit/integration/E2E tests; CI/CD pipeline.
 
 ## Tech Stack & Code Style
+
 - **Backend:** Java 17, Spring Boot 3, Gradle, MongoDB driver, Kafka, Resilience4j, OpenTelemetry.
 - **Frontend:** Next.js 14, React 18, TypeScript, Tailwind, React Query, Zustand, Stripe Elements, STOMP.js, ZXing.
 - **Infra:** Docker, Kubernetes, Redis, Prometheus/Grafana, ELK, Vault.
@@ -321,4 +323,3 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
     - [ ] Rate limiting & input validation  
     - [ ] Audit logging & backups  
     - [ ] Metrics, tracing, health checks
-
