@@ -43,6 +43,14 @@ gradle build
 
 The repository uses a single root `build.gradle` that configures all modules. Running this command triggers the Next.js production build for the frontend and executes the Spring Boot tests for the backend modules.
 
+If you prefer to use the Gradle wrapper, generate its supporting JAR once after cloning:
+
+```bash
+gradle wrapper --console=plain
+```
+
+The `gradle/wrapper/gradle-wrapper.jar` file is intentionally git‑ignored; the above command will download it locally.
+
 To run an individual backend service in development mode, invoke the desired subproject's `bootRun` task from the repository root:
 
 ```bash
