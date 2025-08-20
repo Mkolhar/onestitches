@@ -1,0 +1,31 @@
+import com.github.gradle.node.npm.task.NpmTask
+
+plugins {
+    id 'com.github.node-gradle.node' version '7.0.2' apply false
+}
+subprojects {
+    group = 'com.onestitches'
+    version = '0.0.1-SNAPSHOT'
+    repositories {
+        mavenCentral()
+    }
+}
+
+project(':frontend') {
+    apply plugin: 'com.github.node-gradle.node'
+
+    node {
+        version = '20.12.2'
+        download = true
+    }
+
+    tasks.register('build', NpmTask) {
+        dependsOn 'npmInstall'
+        args = ['run', 'build']
+    }
+
+    tasks.register('test', NpmTask) {
+        dependsOn 'npmInstall'
+        args = ['test']
+    }
+}
