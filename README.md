@@ -10,8 +10,16 @@ SAAS for digitized embroidered clothing.
 - **Integrations:** Stripe Payment Intents, WhatsApp Business API, SMTP, ZXing, WebSocket/STOMP.
 - **Observability:** OpenTelemetry metrics/traces, structured JSON logs, Prometheus/Grafana, ELK stack, alerts via Slack/Email.
 
+
+### Current Progress
+- Backend `inventory` service exposing `GET /api/inventory/products` with stubbed data.
+- Frontend home page fetches and lists products from the inventory API with simple category filters.
+- Backend `inventory` service now exposes `GET /api/inventory/products/{sku}` for product details.
+- Frontend product detail page displays product info with a hover zoom image and shows category.
+
 ### Data Flows
-- **Catalog Browse:** Frontend → `GET /api/inventory/products` → Mongo query → response.
+- **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
+
 - **Customization Upload:** FE validates file → pre-signed URL → upload to S3/GridFS → preview client-side.
 - **Checkout & Payments:** FE confirms Stripe PaymentIntent → `POST /api/orders` → inventory check + persist → publish `order.created` → generate QR → 201.
 - **Real-time Tracking:** Client subscribes `/topic/order/{id}` → `order.status.updated` fan-out via WebSocket; reconnect fetches latest via REST.
@@ -109,7 +117,9 @@ Example `orders` record:
 - [ ] Unit/integration/E2E tests; CI/CD pipeline.
 
 ## Tech Stack & Code Style
-- **Backend:** Java 17, Spring Boot 3, Maven, MongoDB driver, Kafka, Resilience4j, OpenTelemetry.
+
+- **Backend:** Java 17, Spring Boot 3, Gradle, MongoDB driver, Kafka, Resilience4j, OpenTelemetry.
+
 - **Frontend:** Next.js 14, React 18, TypeScript, Tailwind, React Query, Zustand, Stripe Elements, STOMP.js, ZXing.
 - **Infra:** Docker, Kubernetes, Redis, Prometheus/Grafana, ELK, Vault.
 - **Code Style:** Prettier + ESLint (Airbnb) for TypeScript; Spotless + Checkstyle for Java; Conventional Commits; trunk-based development.
@@ -226,3 +236,85 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
 | UPI payment timeouts lower success rate | Poll PaymentIntent, retry UX, pending order reconciliation |
 | Notification spam or policy violations | Template governance, rate limiting, quiet hours, opt-out |
 | Inventory race conditions leading to stock drift | Event-driven single-writer model, Mongo transactions, retry/backoff |
+
+
+## Epic & Task Checklist
+
+- [x] **ep-customer-catalog – Customer Catalog & PDP**
+  - [x] Browse catalog by category and filters  
+    - [x] Scaffold catalog page and inventory API  
+    - [x] Category filter support
+  - [x] Product detail view with zoom  
+    - [x] Product detail endpoint  
+    - [x] PDP with hover-to-zoom image
+
+- [ ] **ep-customization – Product Customization & Preview**
+  - [ ] Upload artwork and preview embroidery  
+    - [ ] File type/size validation  
+    - [ ] Pre-signed upload & 2D overlay preview  
+    - [ ] Persist options into cart state
+
+- [ ] **ep-checkout – Cart, Checkout & Payments**
+  - [ ] Cart management  
+    - [ ] Add/remove/update line items and options  
+    - [ ] Empty-cart guidance
+  - [ ] Stripe checkout with Cards & UPI  
+    - [ ] PaymentIntent create/confirm flow  
+    - [ ] Order creation on success with idempotency  
+    - [ ] Failure handling & messaging
+
+- [ ] **ep-tracking – Real-time Order Tracking**
+  - [ ] Live order status timeline  
+    - [ ] WebSocket setup with auto-reconnect  
+    - [ ] Timeline component & backfill logic
+
+- [ ] **ep-profile – User Profile & Order History**
+  - [ ] Profile & order history with repeat purchase  
+    - [ ] Order history list  
+    - [ ] Repeat purchase hydrates cart
+
+- [ ] **ep-admin-orders – Admin Order Management**
+  - [ ] Admin dashboard search & status updates  
+    - [ ] Search API (<500 ms p95)  
+    - [ ] Status update form with audit log  
+    - [ ] Real-time timeline reflection
+
+- [ ] **ep-qr – QR Code Generation & Scan**
+  - [ ] Generate QR per order  
+    - [ ] ZXing PNG generation  
+    - [ ] Persist QR URLs
+  - [ ] Scan QR to update status  
+    - [ ] React QR scanner  
+    - [ ] Backend transition validation & event
+
+- [ ] **ep-bulk-qr – Bulk QR Status Update**
+  - [ ] Bulk QR status update session  
+    - [ ] Deduplicating scan list UI  
+    - [ ] Batch update endpoint with idempotency  
+    - [ ] Summary response
+
+- [ ] **ep-inventory – Inventory Management**
+  - [ ] Inventory CRUD & auto-deduction  
+    - [ ] CRUD endpoints with transactions  
+    - [ ] Stock decrement consumer  
+    - [ ] Low-stock alert event
+
+- [ ] **ep-notifications – Notification System**
+  - [ ] Notifications on status updates  
+    - [ ] Template CRUD & rendering  
+    - [ ] Email & WhatsApp senders with retry/backoff  
+    - [ ] Notification log search
+
+- [ ] **ep-reports – Reports & Analytics**
+  - [ ] Reports with CSV/PDF export  
+    - [ ] KPI aggregation endpoints  
+    - [ ] Charts & filters UI  
+    - [ ] CSV/PDF export with PII masking
+
+- [ ] **ep-platform – Platform: Security, Observability, Reliability**
+  - [ ] Security, observability, reliability baseline  
+    - [ ] Rate limiting & input validation  
+    - [ ] Audit logging & backups  
+    - [ ] Metrics, tracing, health checks
+
+

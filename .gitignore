@@ -9,3 +9,9 @@ node_modules/
 .DS_Store
 .idea/
 .vscode/
+
+# Gradle
+**/build/
+**/.gradle/
+backend/gradle/wrapper/gradle-wrapper.jar
+
