@@ -10,6 +10,7 @@ SAAS for digitized embroidered clothing.
 - **Integrations:** Stripe Payment Intents, WhatsApp Business API, SMTP, ZXing, WebSocket/STOMP.
 - **Observability:** OpenTelemetry metrics/traces, structured JSON logs, Prometheus/Grafana, ELK stack, alerts via Slack/Email.
 
+
 ### Current Progress
 - Backend `inventory` service exposing `GET /api/inventory/products` with stubbed data.
 - Frontend home page fetches and lists products from the inventory API with simple category filters.
@@ -18,6 +19,7 @@ SAAS for digitized embroidered clothing.
 
 ### Data Flows
 - **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
+
 - **Customization Upload:** FE validates file → pre-signed URL → upload to S3/GridFS → preview client-side.
 - **Checkout & Payments:** FE confirms Stripe PaymentIntent → `POST /api/orders` → inventory check + persist → publish `order.created` → generate QR → 201.
 - **Real-time Tracking:** Client subscribes `/topic/order/{id}` → `order.status.updated` fan-out via WebSocket; reconnect fetches latest via REST.
@@ -32,6 +34,7 @@ SAAS for digitized embroidered clothing.
 - **Compliance:** PCI SAQ-A, GDPR/DPDP (24-mo retention, erasure flow), WhatsApp/Email policy adherence.
 - **Resiliency:** Retry/backoff, circuit breakers, idempotency keys, graceful WebSocket degradation.
 - **Auditing:** All admin/order changes logged with actor, timestamp, before/after snapshot.
+
 
 ## Build & Test
 
@@ -62,6 +65,7 @@ gradle :backend:order:bootRun
 ```
 
 All Gradle configuration lives in the root build file, so these commands must be run from the repository root; running them from within `backend/` will result in `project 'backend' not found` errors.
+
 
 ## Low-Level Design
 ### Class Diagram

@@ -32,6 +32,7 @@ export default async function ProductPage({ params }: { params: { sku: string } 
           className="zoom"
         />
       </div>
+
     </main>
   );
 }

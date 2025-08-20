@@ -7,6 +7,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+
     "strict": false,
     "lib": [
       "dom",
@@ -33,4 +34,5 @@
   "exclude": [
     "node_modules"
   ]
+
 }
