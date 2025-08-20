@@ -23,6 +23,13 @@ class InventoryApplicationTests {
     }
 
     @Test
+    void productsEndpointReturnsAllProductsWhenNoFilter() throws Exception {
+        mockMvc.perform(get("/api/inventory/products"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
     void productsCanBeFilteredByCategory() throws Exception {
         mockMvc.perform(get("/api/inventory/products").param("category", "apparel"))
                 .andExpect(status().isOk())
