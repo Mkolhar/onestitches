@@ -10,12 +10,12 @@ SAAS for digitized embroidered clothing.
 - **Integrations:** Stripe Payment Intents, WhatsApp Business API, SMTP, ZXing, WebSocket/STOMP.
 - **Observability:** OpenTelemetry metrics/traces, structured JSON logs, Prometheus/Grafana, ELK stack, alerts via Slack/Email.
 
-
 ### Current Progress
 - Backend `inventory` service exposing `GET /api/inventory/products` with stubbed data.
 - Frontend home page fetches and lists products from the inventory API with simple category filters.
 - Backend `inventory` service now exposes `GET /api/inventory/products/{sku}` for product details.
 - Frontend product detail page displays product info with a hover zoom image and shows category.
+- Added `ArtworkUploader` component with client-side validation and preview; backend `UploadController` accepts images at `/api/uploads`.
 
 ### Data Flows
 - **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
@@ -65,8 +65,6 @@ gradle :backend:order:bootRun
 ```
 
 All Gradle configuration lives in the root build file, so these commands must be run from the repository root; running them from within `backend/` will result in `project 'backend' not found` errors.
-
-
 ## Low-Level Design
 ### Class Diagram
 ```mermaid
@@ -278,9 +276,11 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
     - [x] PDP with hover-to-zoom image
 
 - [ ] **ep-customization – Product Customization & Preview**
-  - [ ] Upload artwork and preview embroidery  
-    - [ ] File type/size validation  
-    - [ ] Pre-signed upload & 2D overlay preview  
+
+  - [ ] Upload artwork and preview embroidery
+    - [x] File type/size validation
+    - [ ] Pre-signed upload & 2D overlay preview
+
     - [ ] Persist options into cart state
 
 - [ ] **ep-checkout – Cart, Checkout & Payments**
@@ -345,5 +345,4 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
     - [ ] Rate limiting & input validation  
     - [ ] Audit logging & backups  
     - [ ] Metrics, tracing, health checks
-
 
