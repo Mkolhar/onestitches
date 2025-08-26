@@ -1,8 +1,38 @@
-allprojects {
-    group = 'com.onestitches'
-    version = '0.0.1-SNAPSHOT'
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
 
-    repositories {
-        mavenCentral()
-    }
+group = 'com.onestitches'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Temporarily commented out MongoDB dependencies
+    // implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    // Temporarily commented out security dependencies
+    // implementation 'org.springframework.boot:spring-boot-starter-security'
+    // implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+bootJar {
+    archiveBaseName = 'onestitches'
+    archiveVersion = '0.0.1-SNAPSHOT'
 }
