@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-
+import ArtworkUploader from "../../../components/ArtworkUploader";
 type Product = {
   sku: string;
   name: string;
@@ -32,6 +32,7 @@ export default async function ProductPage({ params }: { params: { sku: string } 
           className="zoom"
         />
       </div>
+      <ArtworkUploader />
 
     </main>
   );
