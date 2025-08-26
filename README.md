@@ -19,6 +19,7 @@ SAAS for digitized embroidered clothing.
 
 ### Data Flows
 - **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
+
 - **Customization Upload:** FE validates file → pre-signed URL → upload to S3/GridFS → preview client-side.
 - **Checkout & Payments:** FE confirms Stripe PaymentIntent → `POST /api/orders` → inventory check + persist → publish `order.created` → generate QR → 201.
 - **Real-time Tracking:** Client subscribes `/topic/order/{id}` → `order.status.updated` fan-out via WebSocket; reconnect fetches latest via REST.
@@ -33,6 +34,7 @@ SAAS for digitized embroidered clothing.
 - **Compliance:** PCI SAQ-A, GDPR/DPDP (24-mo retention, erasure flow), WhatsApp/Email policy adherence.
 - **Resiliency:** Retry/backoff, circuit breakers, idempotency keys, graceful WebSocket degradation.
 - **Auditing:** All admin/order changes logged with actor, timestamp, before/after snapshot.
+
 
 ## Build & Test
 
@@ -63,7 +65,6 @@ gradle :backend:order:bootRun
 ```
 
 All Gradle configuration lives in the root build file, so these commands must be run from the repository root; running them from within `backend/` will result in `project 'backend' not found` errors.
-
 ## Low-Level Design
 ### Class Diagram
 ```mermaid
@@ -275,9 +276,11 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
     - [x] PDP with hover-to-zoom image
 
 - [ ] **ep-customization – Product Customization & Preview**
+
   - [ ] Upload artwork and preview embroidery
     - [x] File type/size validation
     - [ ] Pre-signed upload & 2D overlay preview
+
     - [ ] Persist options into cart state
 
 - [ ] **ep-checkout – Cart, Checkout & Payments**

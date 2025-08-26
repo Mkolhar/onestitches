@@ -18,3 +18,4 @@ COPY --from=backend-build /backend/inventory/build/libs/inventory-*.jar inventor
 COPY --from=frontend-build /frontend/.next ./frontend
 ENV JAVA_OPTS="-Xms512m -Xmx512m"
 CMD ["sh","-c","java $JAVA_OPTS -jar order.jar"]
+
