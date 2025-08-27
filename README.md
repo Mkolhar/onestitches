@@ -17,6 +17,8 @@ SAAS for digitized embroidered clothing.
 - Frontend product detail page displays product info with a hover zoom image and shows category.
 - Added `ArtworkUploader` component with client-side validation; backend presign and upload endpoints support single-use uploads.
 - Implemented pre-signed upload flow with 2D overlay preview and cart state persistence.
+- Implemented `POST /api/orders` endpoint with idempotent order creation backed by payment intent verification.
+
 
 ### Data Flows
 - **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
@@ -271,8 +273,9 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
     - [x] Product detail endpoint  
     - [x] PDP with hover-to-zoom image
 
-- [ ] **ep-customization – Product Customization & Preview**
-  - [ ] Upload artwork and preview embroidery
+
+- [x] **ep-customization – Product Customization & Preview**
+  - [x] Upload artwork and preview embroidery
     - [x] File type/size validation
     - [x] Pre-signed upload & 2D overlay preview
     - [x] Persist options into cart state
@@ -281,10 +284,10 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
   - [x] Cart management
     - [x] Add/remove/update line items and options
     - [x] Empty-cart guidance
-  - [ ] Stripe checkout with Cards & UPI  
-    - [ ] PaymentIntent create/confirm flow  
-    - [ ] Order creation on success with idempotency  
-    - [ ] Failure handling & messaging
+  - [x] Stripe checkout with Cards & UPI
+    - [x] PaymentIntent create/confirm flow
+    - [x] Order creation on success with idempotency
+    - [x] Failure handling & messaging
 
 - [ ] **ep-tracking – Real-time Order Tracking**
   - [ ] Live order status timeline  

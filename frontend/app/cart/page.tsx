@@ -1,4 +1,3 @@
-"use client";
 
 import Link from "next/link";
 import { useCartStore } from "../../store/cart";
@@ -6,7 +5,7 @@ import { useCartStore } from "../../store/cart";
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
   const entries = Object.entries(items);
-  
+
   if (entries.length === 0) {
     return (
       <main>
@@ -15,7 +14,6 @@ export default function CartPage() {
       </main>
     );
   }
-  
   return (
     <main>
       <h1>Cart</h1>
