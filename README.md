@@ -71,6 +71,12 @@ gradle :backend:bootRun
 
 All Gradle configuration lives in the root build file, so these commands must be run from the repository root.
 
+### API Docs & Postman Collection
+- OpenAPI UI: after starting the backend, visit `http://localhost:8082/swagger-ui/index.html`.
+- Raw OpenAPI JSON: `http://localhost:8082/v3/api-docs`.
+- Postman collection export: on backend startup, a collection is written to `Docs/postman_collection.json`.
+  - Import this file directly into Postman for up-to-date endpoints.
+
 ## Low-Level Design
 ### Class Diagram
 ```mermaid
