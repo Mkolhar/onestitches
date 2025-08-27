@@ -10,6 +10,7 @@ interface Product {
   category: string;
   price: number;
   imageUrl: string;
+  stock: number;
 }
 
 export default function ProductView({ product }: { product: Product }) {
@@ -29,9 +30,12 @@ export default function ProductView({ product }: { product: Product }) {
       <h1>{product.name}</h1>
       <p>Category: {product.category}</p>
       <p>₹{product.price}</p>
+      <p>{product.stock > 0 ? `In stock: ${product.stock}` : "Out of stock"}</p>
       <CustomizationPreview base={product.imageUrl} overlay={overlay} />
       <ArtworkUploader onUploaded={handleUploaded} />
-      <button onClick={() => addItem(product.sku)}>Add to Cart</button>
+      <button onClick={() => addItem(product.sku)} disabled={product.stock <= 0}>
+        Add to Cart
+      </button>
     </main>
   );
 }

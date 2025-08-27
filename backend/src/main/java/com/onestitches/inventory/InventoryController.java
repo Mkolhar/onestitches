@@ -16,9 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 public class InventoryController {
 
     private static final Map<String, Product> PRODUCTS = Map.of(
-            "TSHIRT-001", new Product("TSHIRT-001", "T-Shirt", "apparel", 499.0, "https://placehold.co/600x400"),
-            "HOODIE-001", new Product("HOODIE-001", "Hoodie", "outerwear", 999.0, "https://placehold.co/600x400"),
-            "MUG-001", new Product("MUG-001", "Coffee Mug", "merch", 299.0, "https://placehold.co/600x400"));
+            "TSHIRT-001", new Product("TSHIRT-001", "T-Shirt", "apparel", 499.0, "https://placehold.co/600x400", 10),
+            "HOODIE-001", new Product("HOODIE-001", "Hoodie", "outerwear", 999.0, "https://placehold.co/600x400", 0),
+            "MUG-001", new Product("MUG-001", "Coffee Mug", "merch", 299.0, "https://placehold.co/600x400", 25));
 
     @GetMapping("/products")
     public List<Product> list(@RequestParam(required = false) String category) {
