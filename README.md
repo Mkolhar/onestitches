@@ -19,6 +19,7 @@ SAAS for digitized embroidered clothing.
 - Implemented pre-signed upload flow with 2D overlay preview and cart state persistence.
 - Implemented `POST /api/orders` endpoint with idempotent order creation backed by payment intent verification.
 
+
 ### Data Flows
 - **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
 - **Customization Upload:** FE validates file → pre-signed URL → upload to S3/GridFS → preview client-side.
@@ -271,6 +272,7 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
   - [x] Product detail view with zoom  
     - [x] Product detail endpoint  
     - [x] PDP with hover-to-zoom image
+
 
 - [x] **ep-customization – Product Customization & Preview**
   - [x] Upload artwork and preview embroidery
