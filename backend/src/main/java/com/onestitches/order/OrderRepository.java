@@ -12,9 +12,9 @@ public class OrderRepository {
     private final Map<String, String> byPaymentIntent = new ConcurrentHashMap<>();
 
     public Order save(Order order) {
-        byId.put(order.id, order);
-        if (order.paymentIntentId != null) {
-            byPaymentIntent.put(order.paymentIntentId, order.id);
+        byId.put(order.id(), order);
+        if (order.paymentIntentId() != null) {
+            byPaymentIntent.put(order.paymentIntentId(), order.id());
         }
         return order;
     }
