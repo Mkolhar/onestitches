@@ -13,6 +13,5 @@ node_modules/
 # Gradle
 **/build/
 **/.gradle/
-
-# gradle/wrapper/gradle-wrapper.jar  # Commented out to allow Gradle wrapper
+gradle/wrapper/gradle-wrapper.jar
 

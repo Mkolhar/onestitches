@@ -2,6 +2,15 @@
 
 SAAS for digitized embroidered clothing.
 
+
+## Product Overview
+- **Product Name:** Digitized Embroidered Clothing Platform
+- **Version:** MVP-1.0
+- **Summary:** Two-sided platform with Customer Portal (e-commerce, customization, payment, tracking) and Admin/Factory Portal (order ops, QR workflows, inventory, notifications, analytics).
+- **Target Users:** D2C shoppers, CSRs, factory operators, supervisors, system administrators.
+- **Goals:** online customization & tracking, QR-driven factory updates, automated communications, actionable analytics.
+- **Success Metrics:** checkout conversion ≥2.5%, payment success ≥95%, lead time −25%, WebSocket latency p95 <2s.
+- 
 ## High-Level Design
 - **UI/Frontend:** Next.js 14 (React 18, TypeScript, Tailwind), Zustand/React Query for state, STOMP client, Stripe Elements, ZXing QR scanner.
 - **API/Backend:** Java 17 Spring Boot 3 application with modular packages (`order`, `inventory`, `notification`, `qr`, `realtime`). Kafka for events, Redis for cache/idempotency.
@@ -18,7 +27,6 @@ SAAS for digitized embroidered clothing.
 - Added `ArtworkUploader` component with client-side validation; backend presign and upload endpoints support single-use uploads.
 - Implemented pre-signed upload flow with 2D overlay preview and cart state persistence.
 - Implemented `POST /api/orders` endpoint with idempotent order creation backed by payment intent verification.
-
 
 ### Data Flows
 - **Catalog Browse:** Frontend → `GET /api/inventory/products?category=apparel` → query stubbed catalog → response.
