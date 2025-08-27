@@ -6,6 +6,7 @@ type Product = {
   category: string;
   price: number;
   imageUrl: string;
+  stock: number;
 };
 
 async function getProducts(category?: string): Promise<Product[]> {
@@ -37,7 +38,7 @@ export default async function Home({
       <ul>
         {products.map((p) => (
           <li key={p.sku}>
-            <Link href={`/product/${p.sku}`}>{p.name}</Link> – ₹{p.price}
+            <Link href={`/product/${p.sku}`}>{p.name}</Link> – ₹{p.price} {p.stock <= 0 ? "(Out of stock)" : ""}
           </li>
         ))}
       </ul>

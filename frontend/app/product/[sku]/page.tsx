@@ -7,6 +7,7 @@ type Product = {
   category: string;
   price: number;
   imageUrl: string;
+  stock: number;
 };
 
 async function getProduct(sku: string): Promise<Product | undefined> {

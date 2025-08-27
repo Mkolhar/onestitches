@@ -1,0 +1,264 @@
+{
+    "vision": "EmbroidMe digitizes India-based embroidery manufacturing with a multi-tenant, mobile-first platform that streamlines ordering, production, and delivery. It combines QR-driven factory workflows and real-time customer tracking to reduce lead times and boost order accuracy at scale.",
+    "objectives": [
+      "Achieve ₹20 crore (~$2.5M) annualized revenue within 12 months in India.",
+      "Reduce order processing lead time by 70% through QR workflows and automation.",
+      "Reach ≥4.8/5 customer rating with ≥99.5% order accuracy."
+    ],
+    "prd": {
+      "problem_statement": [
+        "Embroidery shops rely on manual intake, opaque production, and ad-hoc messaging, causing delays, rework, and poor customer visibility.",
+        "There is no unified system that links customer ordering, factory execution (QR), real-time updates, and notifications while supporting India-first payments (UPI)."
+      ],
+      "target_users": [
+        "Individual customers placing 1–10 custom embroidery orders.",
+        "SMB embroidery businesses (50–1000 orders/month) onboarding as tenants in future phases.",
+        "Corporate buyers with bulk orders and approval flows (later phase).",
+        "Factory floor workers and supervisors updating statuses via QR scans."
+      ],
+      "key_features": [
+        "Multi-tenant foundation (data isolation by org) with RBAC.",
+        "Catalog, search, and product customization (design upload, preview, pricing).",
+        "Checkout with Stripe PaymentIntents prioritizing UPI; webhook-confirmed order creation.",
+        "QR code per order; scan-to-update status; bulk scan mode.",
+        "Real-time order tracking via WebSocket timeline.",
+        "Inventory quantity tracking (price managed separately in backend).",
+        "Notifications via Email + WhatsApp (SMS optional as fallback).",
+        "Analytics: on-time rate, AOV, lead time, defect rate, daily throughput.",
+        "Localization: English, Hindi, Kannada, Marathi."
+      ],
+      "out_of_scope": [
+        "International shipping and multi-currency (non-INR).",
+        "Full warehouse management (advanced picking/packing/put-away).",
+        "Offline factory mode (initial release is online-only).",
+        "Advanced ML pricing beyond admin-controlled rules."
+      ],
+      "non_functional_requirements": [
+        "Performance: API p95 ≤ 200ms; WebSocket updates ≤ 1s end-to-end.",
+        "Scalability: 1,000 concurrent users; 10,000 orders/day; horizontal scaling on stateless services.",
+        "Security/Compliance: PCI DSS SAQ A with Stripe Elements/UPI, India DPDP Act basics, JWT auth, least-privilege RBAC, data encryption in transit (TLS 1.3) and at rest (AES-256).",
+        "Reliability: Target 99.5% availability; backups daily (RPO ≤ 24h), restore within 4h (RTO).",
+        "Accessibility: WCAG 2.1 AA for customer portal core flows.",
+        "Observability: structured logs, metrics, traces; audit logs for order/payment changes.",
+        "i18n/l10n: runtime language switch; server returns locale-aware content."
+      ]
+    },
+    "epics": [
+      {
+        "name": "EP-001 multi-tenant-auth-and-accounts",
+        "stories": [
+          {
+            "id": "US-001-auth-register-login",
+            "story": "As a customer, I want to register and log in securely so that I can place and track orders.",
+            "acceptance_criteria": [
+              "Given a new user, When I sign up with email/password, Then I receive verification and can log in after verifying.",
+              "Given an authenticated session, When idle for 30 minutes, Then I am required to re-authenticate.",
+              "Given invalid credentials, When I attempt login, Then I see an error and no session is created."
+            ]
+          },
+          {
+            "id": "US-002-tenant-foundation",
+            "story": "As a system admin, I want tenant-aware data isolation so that multiple orgs can operate securely on one platform.",
+            "acceptance_criteria": [
+              "Given tenant A and tenant B, When users query orders, Then each sees only their tenant's data.",
+              "Given a new tenant, When created, Then default roles and config are provisioned.",
+              "Given tenant context, When JWT is validated, Then tenantId claims gate API access."
+            ]
+          },
+          {
+            "id": "US-003-rbac-roles",
+            "story": "As an admin, I want role-based access control so that user permissions are enforced across portals.",
+            "acceptance_criteria": [
+              "Given an admin role, When accessing admin endpoints, Then access is allowed and logged.",
+              "Given a customer role, When accessing another user's order, Then access is denied.",
+              "Given roles update, When changed, Then permissions apply immediately to new requests."
+            ]
+          },
+          {
+            "id": "US-004-i18n",
+            "story": "As a user, I want to switch language (EN/HI/KN/MR) so that the UI is understandable to me.",
+            "acceptance_criteria": [
+              "Given language selection, When I switch, Then UI strings update without page reload.",
+              "Given stored preference, When I return, Then my locale persists across sessions."
+            ]
+          }
+        ]
+      },
+      {
+        "name": "EP-002 catalog-and-customization",
+        "stories": [
+          {
+            "id": "US-101-browse-catalog",
+            "story": "As a shopper, I want to browse categories and search so that I can find products quickly.",
+            "acceptance_criteria": [
+              "Given a category, When selected, Then filtered products render with pagination.",
+              "Given a query, When I search, Then results are highlighted with fuzzy matches."
+            ]
+          },
+          {
+            "id": "US-102-product-detail",
+            "story": "As a shopper, I want a product page with images and variants so that I can choose the right base item.",
+            "acceptance_criteria": [
+              "Given a product, When opened, Then gallery zoom works and variant selection updates price.",
+              "Given out-of-stock variant, When selected, Then add-to-cart is disabled."
+            ]
+          },
+          {
+            "id": "US-103-design-upload-preview",
+            "story": "As a shopper, I want to upload my design and preview embroidery so that I can validate placement before ordering.",
+            "acceptance_criteria": [
+              "Given valid file (PNG/JPG/SVG/AI/EPS ≤10MB), When uploaded, Then preview renders on mockup.",
+              "Given positioned design, When I adjust size/position, Then price recalculates accordingly.",
+              "Given invalid file, When uploaded, Then I see a helpful validation error."
+            ]
+          },
+          {
+            "id": "US-104-cart-persistence",
+            "story": "As a shopper, I want my cart to persist so that I can resume checkout later.",
+            "acceptance_criteria": [
+              "Given items in cart, When I return within 7 days, Then the same items are restored.",
+              "Given a promo code, When applied, Then totals update in real time."
+            ]
+          }
+        ]
+      },
+      {
+        "name": "EP-003 checkout-and-payments-upi",
+        "stories": [
+          {
+            "id": "US-201-create-payment-intent-upi",
+            "story": "As a shopper, I want to pay via UPI using Stripe PaymentIntents so that my order is confirmed only after payment.",
+            "acceptance_criteria": [
+              "Given order totals server-side, When I initiate payment, Then a PaymentIntent is created with correct amount in INR.",
+              "Given a successful UPI confirmation, When webhook fires, Then order is created/updated to CONFIRMED and receipt is sent.",
+              "Given a failed/expired payment, When notified, Then no order is created or it's marked FAILED and I see a clear error."
+            ]
+          },
+          {
+            "id": "US-202-address-shipping",
+            "story": "As a shopper, I want to enter and validate my address so that shipping is accurate.",
+            "acceptance_criteria": [
+              "Given address form, When completed, Then validation enforces postal code/city/state formats.",
+              "Given saved addresses, When I select default, Then checkout pre-fills details."
+            ]
+          },
+          {
+            "id": "US-203-order-confirmation",
+            "story": "As a shopper, I want a confirmation page and email/WhatsApp so that I have proof of purchase.",
+            "acceptance_criteria": [
+              "Given a paid order, When confirmed, Then confirmation page shows order number and summary.",
+              "Given notifications enabled, When order is created, Then email and WhatsApp message are sent with details."
+            ]
+          }
+        ]
+      },
+      {
+        "name": "EP-004 orders-qr-and-real-time-tracking",
+        "stories": [
+          {
+            "id": "US-301-generate-qr",
+            "story": "As the system, I want to generate a QR per order (UUID encoded) so that factory can scan and update status quickly.",
+            "acceptance_criteria": [
+              "Given an order, When created, Then a PNG QR is generated and stored with the order record.",
+              "Given admin access, When requested, Then QR image is retrievable for printing."
+            ]
+          },
+          {
+            "id": "US-302-scan-to-update",
+            "story": "As a worker, I want to scan a QR and set the next status so that production flow is recorded.",
+            "acceptance_criteria": [
+              "Given a valid QR, When scanned on Android browser/camera, Then order is fetched and allowed statuses are shown.",
+              "Given a duplicate scan for same status, When repeated, Then update is idempotent and logged once."
+            ]
+          },
+          {
+            "id": "US-303-bulk-scan",
+            "story": "As a supervisor, I want bulk scan mode so that I can update many orders at once.",
+            "acceptance_criteria": [
+              "Given bulk mode, When scanning multiple QRs, Then a running list appears with success/fail per order.",
+              "Given completion, When applied, Then a summary shows totals updated and errors."
+            ]
+          },
+          {
+            "id": "US-304-realtime-tracking",
+            "story": "As a customer, I want a live timeline so that I can see progress without refreshing.",
+            "acceptance_criteria": [
+              "Given I'm viewing tracking, When status changes server-side, Then a WebSocket message updates the timeline within 1s.",
+              "Given unauthorized user, When accessing another order, Then access is denied."
+            ]
+          }
+        ]
+      },
+      {
+        "name": "EP-005 admin-ops-inventory-notifications-analytics",
+        "stories": [
+          {
+            "id": "US-401-inventory-quantity",
+            "story": "As an admin, I want inventory quantities tracked so that low-stock alerts can be raised (pricing handled separately).",
+            "acceptance_criteria": [
+              "Given order.created, When consumed, Then stock qty is decremented for stocked SKUs.",
+              "Given threshold breach, When detected, Then an inventory.low event is emitted."
+            ]
+          },
+          {
+            "id": "US-402-notifications",
+            "story": "As a customer, I want email/WhatsApp notifications for key events so that I am informed.",
+            "acceptance_criteria": [
+              "Given order.created, When received, Then an order confirmation email and WhatsApp are sent (if opted-in).",
+              "Given status=SHIPPED or DELIVERED, When updated, Then corresponding templates are sent and logged."
+            ]
+          },
+          {
+            "id": "US-403-analytics-dashboard",
+            "story": "As an owner, I want a dashboard with top KPIs so that I can monitor performance.",
+            "acceptance_criteria": [
+              "Given a date range, When applied, Then the dashboard shows on-time rate, AOV, lead time, defect rate, and throughput.",
+              "Given export, When clicked, Then CSV and PDF downloads include selected metrics."
+            ]
+          },
+          {
+            "id": "US-404-returns-exceptions",
+            "story": "As an admin, I want exception-based refunds so that rare cases can be resolved.",
+            "acceptance_criteria": [
+              "Given an order, When refund is approved, Then Stripe refund is issued and order status updates to REFUNDED.",
+              "Given policy rules, When return is not allowed, Then UI clearly indicates no-return except admin override."
+            ]
+          },
+          {
+            "id": "US-405-ip-attestation",
+            "story": "As a platform, I want customers to attest IP ownership so that we reduce legal risk on uploads.",
+            "acceptance_criteria": [
+              "Given design upload, When submitting, Then user must accept an attestation checkbox.",
+              "Given a report, When flagged, Then admin can review and take action (disable/cancel)."
+            ]
+          }
+        ]
+      }
+    ],
+    "estimates": [
+      { "id": "US-001-auth-register-login", "size": "M", "priority": 1 },
+      { "id": "US-002-tenant-foundation", "size": "L", "priority": 1 },
+      { "id": "US-003-rbac-roles", "size": "M", "priority": 1 },
+      { "id": "US-004-i18n", "size": "S", "priority": 2 },
+  
+      { "id": "US-101-browse-catalog", "size": "M", "priority": 1 },
+      { "id": "US-102-product-detail", "size": "M", "priority": 1 },
+      { "id": "US-103-design-upload-preview", "size": "L", "priority": 1 },
+      { "id": "US-104-cart-persistence", "size": "S", "priority": 2 },
+  
+      { "id": "US-201-create-payment-intent-upi", "size": "L", "priority": 1 },
+      { "id": "US-202-address-shipping", "size": "S", "priority": 2 },
+      { "id": "US-203-order-confirmation", "size": "S", "priority": 1 },
+  
+      { "id": "US-301-generate-qr", "size": "M", "priority": 1 },
+      { "id": "US-302-scan-to-update", "size": "M", "priority": 1 },
+      { "id": "US-303-bulk-scan", "size": "M", "priority": 2 },
+      { "id": "US-304-realtime-tracking", "size": "M", "priority": 1 },
+  
+      { "id": "US-401-inventory-quantity", "size": "M", "priority": 2 },
+      { "id": "US-402-notifications", "size": "M", "priority": 1 },
+      { "id": "US-403-analytics-dashboard", "size": "M", "priority": 2 },
+      { "id": "US-404-returns-exceptions", "size": "S", "priority": 2 },
+      { "id": "US-405-ip-attestation", "size": "S", "priority": 3 }
+    ]
+  }
