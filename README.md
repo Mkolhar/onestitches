@@ -359,3 +359,7 @@ CREATE INDEX idx_logs_order ON notification_logs(orderId);
 
 
 Progress will be updated as features are completed.
+
+
+## Version Update
+- **v1.0.1** (2026-06-28): Backup update with local filesystem changes.
